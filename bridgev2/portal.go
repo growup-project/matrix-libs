@@ -705,6 +705,16 @@ func (portal *Portal) handleMatrixEvent(ctx context.Context, sender *User, evt *
 		// Tombstones aren't bridged so they don't need a login
 		return portal.handleMatrixTombstone(ctx, evt)
 	}
+	switch evt.Type {
+	case event.EventMessage, event.EventSticker, event.EventUnstablePollStart, event.EventUnstablePollResponse,
+		event.EventReaction, event.EventRedaction,
+		event.StateRoomName, event.StateTopic, event.StateRoomAvatar, event.StateBeeperDisappearingTimer,
+		event.AccountDataMarkedUnread, event.AccountDataRoomTags, event.AccountDataBeeperMute,
+		event.StateMember, event.StatePowerLevels, event.BeeperDeleteChat, event.BeeperAcceptMessageRequest:
+		// known event types, continue handling below
+	default:
+		return EventHandlingResultIgnored
+	}
 	login, userPortal, err := portal.FindPreferredLogin(ctx, sender, true)
 	if err != nil {
 		log.Err(err).Msg("Failed to get user login to handle Matrix event")
