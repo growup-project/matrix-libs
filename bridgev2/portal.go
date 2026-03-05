@@ -796,10 +796,6 @@ func (portal *Portal) handleMatrixEvent(ctx context.Context, sender *User, evt *
 	case event.EventMessage, event.EventSticker, event.EventUnstablePollStart, event.EventUnstablePollResponse:
 		return portal.handleMatrixMessage(ctx, login, origSender, evt)
 	case event.EventReaction:
-		if origSender != nil {
-			log.Debug().Msg("Ignoring reaction event from relayed user")
-			return EventHandlingResultIgnored.WithMSSError(ErrIgnoringReactionFromRelayedUser)
-		}
 		return portal.handleMatrixReaction(ctx, login, evt)
 	case event.EventRedaction:
 		return portal.handleMatrixRedaction(ctx, login, origSender, evt)
